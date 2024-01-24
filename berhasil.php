@@ -1,0 +1,93 @@
+<?php 
+		session_start();
+		include 'koneksi.php';
+		if($_SESSION['stat_login'] != true){
+			echo '<script>window.location="login.php"</script>';
+		}
+	
+		$peserta = mysqli_query($conn, "SELECT * FROM tb_pendaftaran WHERE id_pendaftaran = '".$_GET['id']."' ");
+		$p = mysqli_fetch_object($peserta);
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>PSB Online</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+	<section class="box-formulir">
+		
+		<h2>Pendaftaran Berhasil</h2>
+
+		<div class="box">
+			<h4>Kode pendaftaran Anda adalah <?php echo $_GET['id'] ?></h4>
+			<a href="cetak-bukti.php?id=<?php echo $_GET['id'] ?>" target="_blank" class="btn-cetak">Cetak Bukti Daftar</a>
+			<li><a href="http://localhost/PSB/edit-peserta.php"target="_blank" class="btn-cetak">EDIT</a></li></li>
+			<li><a href="http://localhost/PSB/data-peserta.php"target="_blank" class="btn-cetak">data Peserta</a></li></li>
+		</div>
+	</section>
+	<section class="content">
+		<h2>Detail Peserta</h2>
+		<div class="box">
+			
+			<table class="table-data" border="0">
+				<tr>
+					<td>Kode Pendaftaran</td>
+					<td>:</td>
+					<td><?php echo $p->id_pendaftaran ?></td>
+				</tr>
+				<tr>
+					<td>Tahun Ajaran</td>
+					<td>:</td>
+					<td><?php echo $p->th_ajaran ?></td>
+				</tr>
+				<tr>
+					<td>Jurusan</td>
+					<td>:</td>
+					<td><?php echo $p->jurusan ?></td>
+				</tr>
+				<tr>
+					<td>Nama Lengkap</td>
+					<td>:</td>
+					<td><?php echo $p->nm_peserta ?></td>
+				</tr>
+				<tr>
+					<td>foto</td>
+					<td>:</td>
+					<td><img src="../assets/file/<?php echo $b['foto'] ; ?>" style="width: 50%;"></td>				</tr>
+				<tr>
+					<td>kecamatan</td>
+					<td>:</td>
+					<td><?php echo $p->kecamatan ?></td>
+				</tr>
+				<tr>
+					<td>Tempat, Tanggal Lahir</td>
+					<td>:</td>
+					<td><?php echo $p->tmp_lahir.', '.$p->tgl_lahir ?></td>
+				</tr>
+				<tr>
+					<td>Jenis Kelamin</td>
+					<td>:</td>
+					<td><?php echo $p->jk ?></td>
+				</tr>
+				<tr>
+					<td>Agama</td>
+					<td>:</td>
+					<td><?php echo $p->agama ?></td>
+				</tr>
+				<tr>
+					<td>Alamat</td>
+					<td>:</td>
+					<td><?php echo $p->almt_peserta ?></td>
+				</tr>
+			</table>
+
+		</div>
+	</section>
+
+</body>
+</html>
