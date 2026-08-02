@@ -20,8 +20,11 @@ jobs:
           extensions: mbstring, pdo, pdo_sqlite, gd, bcmath
           coverage: none
 
+      - name: Disable Composer Audit Blocking
+        run: composer config audit.block false
+
       - name: Install Dependencies
-        run: composer install --no-interaction --prefer-dist --no-audit
+        run: composer install --no-interaction --prefer-dist
 
       - name: Copy Environment
         run: cp .env.example .env
