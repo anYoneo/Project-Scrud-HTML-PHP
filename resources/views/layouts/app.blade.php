@@ -4,96 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'PSB Online') - PSB Online SMK</title>
+    <title>@yield('title', 'PSB Online v2')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f8f9fa; }
-        .sidebar { min-height: 100vh; background: #fff; box-shadow: 2px 0 10px rgba(0,0,0,.08); width: 260px; position: fixed; top: 0; left: 0; z-index: 100; }
-        .sidebar-brand { padding: 1.5rem; border-bottom: 1px solid #e9ecef; }
-        .sidebar-brand h5 { color: #0d6efd; font-weight: 700; margin: 0; }
-        .sidebar-brand small { color: #6c757d; font-size: .75rem; }
-        .sidebar .nav-link { color: #495057; padding: .65rem 1.5rem; border-radius: 8px; margin: 2px 12px; font-weight: 500; font-size: .9rem; transition: all .2s; }
-        .sidebar .nav-link:hover, .sidebar .nav-link.active { background: #e8f0fe; color: #0d6efd; }
-        .sidebar .nav-link i { width: 20px; }
-        .main-content { margin-left: 260px; }
-        .topbar { background: #fff; padding: 1rem 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); position: sticky; top: 0; z-index: 99; display: flex; justify-content: space-between; align-items: center; }
-        .topbar .page-title { font-weight: 600; color: #212529; margin: 0; font-size: 1.1rem; }
-        .content-area { padding: 1.5rem; }
-        .card { border: none; box-shadow: 0 2px 12px rgba(0,0,0,.06); border-radius: 12px; }
-        .card-header { background: transparent; border-bottom: 1px solid #e9ecef; font-weight: 600; padding: 1rem 1.25rem; }
-        .stat-card { border-radius: 12px; color: white; padding: 1.5rem; }
-        .stat-card .stat-number { font-size: 2rem; font-weight: 700; }
-        .stat-card .stat-label { opacity: .85; font-size: .9rem; }
-        .btn { border-radius: 8px; font-weight: 500; }
-        .table thead th { background: #f8f9fa; font-weight: 600; font-size: .85rem; text-transform: uppercase; letter-spacing: .05em; color: #6c757d; }
-        .badge { border-radius: 6px; font-weight: 500; }
-        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .main-content { margin-left: 0; } }
+        :root { --primary: #2563eb; --primary-dark: #1d4ed8; }
+        body { min-height: 100vh; display: flex; flex-direction: column; background: #f8fafc; }
+        .navbar { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+        .navbar-brand, .nav-link { color: #fff !important; }
+        .nav-link:hover { color: #e2e8f0 !important; }
+        main { flex: 1; }
+        footer { background: #1e293b; color: #94a3b8; padding: 1.5rem 0; text-align: center; }
+        .btn-primary { background: var(--primary); border-color: var(--primary); }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .card { border: none; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+        .stat-card { border-left: 4px solid var(--primary); }
+        .stat-card.success { border-left-color: #16a34a; }
+        .stat-card.warning { border-left-color: #eab308; }
+        .stat-card.danger { border-left-color: #dc2626; }
+        .stat-card.info { border-left-color: #0891b2; }
+        .badge-pending { background: #fef3c7; color: #92400e; }
+        .badge-verified { background: #dbeafe; color: #1e40af; }
+        .badge-accepted { background: #dcfce7; color: #166534; }
+        .badge-rejected { background: #fee2e2; color: #991b1b; }
     </style>
     @stack('styles')
 </head>
 <body>
-<div class="sidebar">
-    <div class="sidebar-brand">
-        <h5><i class="bi bi-mortarboard-fill me-2"></i>PSB Online</h5>
-        <small>Penerimaan Siswa Baru</small>
-    </div>
-    <div class="pt-3">
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('peserta.index') }}" class="nav-link {{ request()->routeIs('peserta.*') ? 'active' : '' }}">
-                    <i class="bi bi-people me-2"></i>Data Peserta
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('peserta.create') }}" class="nav-link">
-                    <i class="bi bi-person-plus me-2"></i>Daftar Baru
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('laporan.daftar') }}" class="nav-link {{ request()->routeIs('laporan.*') ? 'active' : '' }}">
-                    <i class="bi bi-printer me-2"></i>Laporan
-                </a>
-            </li>
-            <li class="nav-item mt-3">
-                <form action="{{ route('logout') }}" method="POST" class="px-3">
-                    @csrf
-                    <button type="submit" class="btn btn-outline-danger w-100">
-                        <i class="bi bi-box-arrow-right me-2"></i>Logout
-                    </button>
-                </form>
-            </li>
-        </ul>
-    </div>
-</div>
-<div class="main-content">
-    <div class="topbar">
-        <h6 class="page-title">@yield('page-title', 'Dashboard')</h6>
-        <span class="text-muted small"><i class="bi bi-person-circle me-1"></i>{{ session('admin_name') }}</span>
-    </div>
-    <div class="content-area">
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show">
-                <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{{ route('home') }}">
+                <i class="bi bi-mortarboard-fill"></i> PSB Online v2
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Beranda</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('registration.create') }}">Daftar</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('registration.check') }}">Cek Status</a></li>
+                </ul>
+                <ul class="navbar-nav">
+                    @auth('admin')
+                        <li class="nav-item"><a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                        <li class="nav-item">
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="nav-link btn btn-link">Logout</button>
+                            </form>
+                        </li>
+                    @else
+                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login Admin</a></li>
+                    @endauth
+                </ul>
             </div>
-        @endif
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show">
-                <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-        @yield('content')
-    </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-@stack('scripts')
+        </div>
+    </nav>
+
+    <main class="py-4">
+        <div class="container">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show">
+                    <i class="bi bi-check-circle"></i> {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show">
+                    <i class="bi bi-exclamation-circle"></i> {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+            @yield('content')
+        </div>
+    </main>
+
+    <footer>
+        <p class="mb-0">&copy; {{ date('Y') }} SMK Negeri — PSB Online v2. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @stack('scripts')
 </body>
 </html>
