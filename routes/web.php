@@ -1,32 +1,33 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\LaporanController;
-use App\Http\Controllers\PesertaController;
-use App\Http\Middleware\AuthCheck;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PendaftaranController;
+use App\Http\Controllers\PublicRegistrationController;
 use Illuminate\Support\Facades\Route;
 
-// --- Public ---
-Route::get('/', fn () => redirect()->route('login'))->name('home');
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+// Public Routes
+Route::get('/', function () {
+    return view('public.home');
+})->name('home');
 
-// --- Protected ---
-Route::middleware([AuthCheck::class])->group(function () {
+Route::get('/daftar', [PublicRegistrationController::class, 'create'])->name('registration.create');
+Route::post('/daftar', [PublicRegistrationController::class, 'store'])->name('registration.store');
+Route::get('/daftar/sukses/{nomorPendaftaran}', [PublicRegistrationController::class, 'success'])->name('registration.success');
+Route::get('/cek-status', [PublicRegistrationController::class, 'checkStatus'])->name('registration.check');
+Route::get('/cek-status/{nomorPendaftaran}', [PublicRegistrationController::class, 'showStatus'])->name('registration.status');
 
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// Auth Routes
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+// Admin Routes (Protected)
+Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::resource('peserta', PesertaController::class);
-    Route::get('/peserta-autocomplete', [PesertaController::class, 'autocompleteKecamatan'])
-         ->name('peserta.autocomplete');
-    Route::patch('/peserta/{peserta}/status', [PesertaController::class, 'updateStatus'])
-         ->name('peserta.status');
-
-    Route::get('/laporan/bukti/{peserta}', [LaporanController::class, 'cetakBukti'])
-         ->name('laporan.bukti');
-    Route::get('/laporan/daftar', [LaporanController::class, 'cetakDaftar'])
-         ->name('laporan.daftar');
+    Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pendaftaran.index');
+    Route::get('/pendaftaran/{pendaftaran}', [PendaftaranController::class, 'show'])->name('pendaftaran.show');
+    Route::patch('/pendaftaran/{pendaftaran}/status', [PendaftaranController::class, 'updateStatus'])->name('pendaftaran.updateStatus');
+    Route::delete('/pendaftaran/{pendaftaran}', [PendaftaranController::class, 'destroy'])->name('pendaftaran.destroy');
 });
