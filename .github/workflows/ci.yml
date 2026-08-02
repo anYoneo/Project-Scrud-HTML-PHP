@@ -24,7 +24,7 @@ jobs:
         run: composer config audit.block false
 
       - name: Install Dependencies
-        run: composer install --no-interaction --prefer-dist
+        run: COMPOSER_AUDIT_ABORT=0 composer install --no-interaction --prefer-dist
 
       - name: Copy Environment
         run: cp .env.example .env
