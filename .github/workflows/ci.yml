@@ -23,16 +23,11 @@ jobs:
       - name: Copy Environment
         run: cp .env.example .env
 
-      - name: Run Diagnostics & Install
-        run: |
-          composer update --no-interaction --prefer-dist --no-audit --ignore-platform-reqs || true
-          if [ ! -d "vendor" ]; then
-            echo "Vendor not created, running fallback install..."
-            composer install --no-interaction --prefer-dist --no-audit --ignore-platform-reqs || true
-          fi
+      - name: Install Dependencies
+        run: composer update --no-interaction --prefer-dist --no-audit --ignore-platform-reqs
 
       - name: Generate Key
-        run: php artisan key:generate || echo "Key generate skipped if non-laravel"
+        run: php artisan key:generate
 
       - name: Run Tests
-        run: php artisan test || phpunit || echo "Tests finished"
+        run: php artisan test
