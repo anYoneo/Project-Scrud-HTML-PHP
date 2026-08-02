@@ -4,12 +4,15 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PendaftaranController;
 use App\Http\Controllers\PublicRegistrationController;
+use App\Http\Controllers\HealthController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
 Route::get('/', function () {
     return view('public.home');
 })->name('home');
+
+Route::get('/health', HealthController::class);
 
 Route::get('/daftar', [PublicRegistrationController::class, 'create'])->name('registration.create');
 Route::post('/daftar', [PublicRegistrationController::class, 'store'])->name('registration.store');

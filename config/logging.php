@@ -1,0 +1,24 @@
+<?php
+return [
+    'default' => env('LOG_CHANNEL', 'stack'),
+    'channels' => [
+        'stack' => [
+            'driver' => 'stack',
+            'channels' => ['daily', 'stderr'],
+            'ignore_exceptions' => false,
+        ],
+        'daily' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/laravel.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 14,
+        ],
+        'stderr' => [
+            'driver' => 'monolog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'handler' => \Monolog\Handler\StreamHandler::class,
+            'formatter' => \Monolog\Formatter\JsonFormatter::class,
+            'with' => ['stream' => 'php://stderr'],
+        ],
+    ],
+];
