@@ -21,7 +21,7 @@ jobs:
           coverage: none
 
       - name: Install Dependencies
-        run: composer install --no-interaction --prefer-dist --audit-block=false
+        run: composer install --no-interaction --prefer-dist
 
       - name: Copy Environment
         run: cp .env.example .env
