@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,7 +10,7 @@ use Illuminate\Support\Carbon;
 
 class Pendaftaran extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     protected $fillable = [
         'nomor_pendaftaran', 'tanggal_daftar', 'tahun_ajaran',
@@ -28,6 +29,16 @@ class Pendaftaran extends Model
         return $this->belongsTo(Kecamatan::class);
     }
 
+    public function jurusan(): BelongsTo
+    {
+        return $this->belongsTo(Jurusan::class, 'jurusan', 'nama_jurusan');
+    }
+
+    public static function generateNomorPendaftaran(): string
+    {
+        return self::generateNomor();
+    }
+
     /**
      * Generate unique registration number: P{YEAR}{5-digit-sequence}
      */
@@ -39,7 +50,7 @@ class Pendaftaran extends Model
                       ->orderBy('nomor_pendaftaran', 'desc')
                       ->first();
 
-        $seq = $last ? ((int) substr($last->nomor_pendaftaran, -5)) + 1 : 1;
+        $seq = $last ? ((int) substr($last->nomor_pendaftaran, 5)) + 1 : 1;
 
         return $prefix . str_pad($seq, 5, '0', STR_PAD_LEFT);
     }
@@ -47,5 +58,15 @@ class Pendaftaran extends Model
     public function getUmurAttribute(): int
     {
         return $this->tanggal_lahir->age;
+    }
+
+    public function scopeByTahunAjaran($query, $tahunAjaran)
+    {
+        return $query->where('tahun_ajaran', $tahunAjaran);
+    }
+
+    public function scopeByStatus($query, $status)
+    {
+        return $query->where('status', $status);
     }
 }
