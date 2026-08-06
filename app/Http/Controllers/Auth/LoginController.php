@@ -18,7 +18,7 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => ['required', 'email'],
+            'username' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
@@ -27,11 +27,11 @@ class LoginController extends Controller
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
             throw ValidationException::withMessages([
-                'email' => ["Terlalu banyak percobaan login. Silakan coba lagi dalam {$seconds} detik."],
+                'username' => ["Terlalu banyak percobaan login. Silakan coba lagi dalam {$seconds} detik."],
             ]);
         }
 
-        if (Auth::guard('admin')->attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        if (Auth::guard('admin')->attempt($request->only('username', 'password'), $request->boolean('remember'))) {
             $request->session()->regenerate();
             RateLimiter::clear($key);
             return redirect()->intended(route('admin.dashboard'));
@@ -40,7 +40,7 @@ class LoginController extends Controller
         RateLimiter::hit($key, 60);
 
         throw ValidationException::withMessages([
-            'email' => ['Email atau password salah.'],
+            'username' => ['Username atau password salah.'],
         ]);
     }
 
