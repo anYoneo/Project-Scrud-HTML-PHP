@@ -59,11 +59,22 @@
                         @error('alamat') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label">Kecamatan</label>
+                        <select name="kecamatan_id" class="form-select @error('kecamatan_id') is-invalid @enderror">
+                            <option value="">Pilih Kecamatan</option>
+                            @foreach($kecamatans as $k)
+                                <option value="{{ $k->id }}" {{ old('kecamatan_id') == $k->id ? 'selected' : '' }}>{{ $k->nama_kecamatan }}</option>
+                            @endforeach
+                        </select>
+                        @error('kecamatan_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
+
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">No. Telepon/HP</label>
-                            <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" value="{{ old('no_telepon') }}">
-                            @error('no_telepon') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            <input type="text" name="telepon" class="form-control @error('telepon') is-invalid @enderror" value="{{ old('telepon') }}">
+                            @error('telepon') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Email (Opsional)</label>

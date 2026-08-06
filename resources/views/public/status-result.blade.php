@@ -21,7 +21,7 @@
                     <tr>
                         <td class="text-muted">Jurusan Pilihan</td>
                         <td>:</td>
-                        <td>{{ $pendaftaran->jurusan->nama_jurusan ?? '-' }}</td>
+                        <td>{{ $pendaftaran->jurusan ?? '-' }}</td>
                     </tr>
                     <tr>
                         <td class="text-muted">Status Saat Ini</td>
@@ -31,9 +31,9 @@
                                 <span class="badge badge-pending px-3 py-2"><i class="bi bi-hourglass-split"></i> Pending</span>
                             @elseif($pendaftaran->status == 'verified')
                                 <span class="badge badge-verified px-3 py-2"><i class="bi bi-check2-circle"></i> Terverifikasi</span>
-                            @elseif($pendaftaran->status == 'accepted')
+                            @elseif($pendaftaran->status == 'accepted' || $pendaftaran->status == 'diterima')
                                 <span class="badge badge-accepted px-3 py-2"><i class="bi bi-trophy"></i> Diterima</span>
-                            @elseif($pendaftaran->status == 'rejected')
+                            @elseif($pendaftaran->status == 'rejected' || $pendaftaran->status == 'ditolak')
                                 <span class="badge badge-rejected px-3 py-2"><i class="bi bi-x-circle"></i> Ditolak</span>
                             @endif
                         </td>
