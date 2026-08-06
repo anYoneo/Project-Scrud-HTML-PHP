@@ -14,16 +14,20 @@ class DashboardController extends Controller
         $tahunAjaran = date('Y') . '/' . (date('Y') + 1);
 
         $stats = [
-            'total_pendaftar' => Pendaftaran::byTahunAjaran($tahunAjaran)->count(),
+            'total' => Pendaftaran::byTahunAjaran($tahunAjaran)->count(),
             'pending' => Pendaftaran::byTahunAjaran($tahunAjaran)->byStatus('pending')->count(),
             'verified' => Pendaftaran::byTahunAjaran($tahunAjaran)->byStatus('verified')->count(),
             'accepted' => Pendaftaran::byTahunAjaran($tahunAjaran)->byStatus('accepted')->count(),
             'rejected' => Pendaftaran::byTahunAjaran($tahunAjaran)->byStatus('rejected')->count(),
         ];
 
-        $jurusanStats = Jurusan::withCount(['pendaftaran' => function ($query) use ($tahunAjaran) {
-            $query->where('tahun_ajaran', $tahunAjaran);
-        }])->where('is_active', true)->get();
+        $jurusans = Jurusan::where('is_active', true)->get()->map(function ($j) use ($tahunAjaran) {
+            $j->terisi = Pendaftaran::where('jurusan', $j->nama_jurusan)
+                ->byTahunAjaran($tahunAjaran)
+                ->where('status', 'accepted')
+                ->count();
+            return $j;
+        });
 
         $recentRegistrations = Pendaftaran::with('jurusan')
             ->byTahunAjaran($tahunAjaran)
@@ -31,6 +35,6 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'jurusanStats', 'recentRegistrations', 'tahunAjaran'));
+        return view('admin.dashboard', compact('stats', 'jurusans', 'recentRegistrations', 'tahunAjaran'));
     }
 }
