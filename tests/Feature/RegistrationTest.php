@@ -14,8 +14,9 @@ class RegistrationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        \App\Models\Kecamatan::create(['nama_kecamatan' => 'Leuwimunding']);
         Jurusan::create([
-            'nama_jurusan' => 'Teknik Komputer',
+            'nama_jurusan' => 'Teknik Komputer dan Jaringan',
             'kuota' => 40,
             'is_active' => true,
         ]);
@@ -25,27 +26,34 @@ class RegistrationTest extends TestCase
     {
         $response = $this->get(route('registration.create'));
         $response->assertStatus(200);
-        $response->assertSee('Teknik Komputer');
+        $response->assertSee('Teknik Komputer dan Jaringan');
     }
 
     public function test_student_can_register(): void
     {
+        $kecamatan = \App\Models\Kecamatan::first();
+
         $response = $this->post(route('registration.store'), [
-            'jurusan_id' => 1,
+            'jurusan_id' => 'Teknik Komputer dan Jaringan',
             'nama_peserta' => 'Budi Santoso',
             'tempat_lahir' => 'Jakarta',
-            'tanggal_lahir' => '2010-05-15',
-            'jenis_kelamin' => 'L',
+            'tanggal_lahir' => '1999-05-15',
+            'jenis_kelamin' => 'Laki-laki',
             'agama' => 'Islam',
             'alamat' => 'Jl. Merdeka No. 10',
-            'nama_wali' => 'Andi Santoso',
-            'telepon_wali' => '08123456789',
+            'telepon' => '08123456789',
+            'kecamatan_id' => $kecamatan->id,
         ]);
 
-        $response->assertRedirect();
-        $this->assertDatabaseHas('pendaftaran', [
+        if ($response->status() !== 302) {
+            fwrite(STDERR, print_r(session()->get('errors') ? session()->get('errors')->all() : 'No validation errors', true));
+        }
+
+        $response->assertRedirect(route('registration.success', 'P' . date('Y') . '00001'));
+        $this->assertDatabaseHas('pendaftarans', [
             'nama_peserta' => 'Budi Santoso',
             'status' => 'pending',
+            'telepon' => '08123456789',
         ]);
     }
 
@@ -54,7 +62,7 @@ class RegistrationTest extends TestCase
         $response = $this->post(route('registration.store'), []);
         $response->assertSessionHasErrors([
             'nama_peserta', 'tempat_lahir', 'tanggal_lahir',
-            'jenis_kelamin', 'agama', 'alamat', 'nama_wali', 'telepon_wali',
+            'jenis_kelamin', 'agama', 'alamat', 'kecamatan_id', 'jurusan_id',
         ]);
     }
 
@@ -67,7 +75,7 @@ class RegistrationTest extends TestCase
     public function test_student_can_check_status(): void
     {
         $pendaftaran = Pendaftaran::factory()->create([
-            'jurusan_id' => 1,
+            'jurusan' => 'Teknik Komputer dan Jaringan',
             'status' => 'pending',
         ]);
 

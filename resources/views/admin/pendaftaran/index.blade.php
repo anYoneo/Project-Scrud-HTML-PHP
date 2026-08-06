@@ -65,8 +65,8 @@
                             <td>
                                 @if($p->status == 'pending') <span class="badge badge-pending">Pending</span>
                                 @elseif($p->status == 'verified') <span class="badge badge-verified">Verified</span>
-                                @elseif($p->status == 'accepted') <span class="badge badge-accepted">Accepted</span>
-                                @elseif($p->status == 'rejected') <span class="badge badge-rejected">Rejected</span>
+                                @elseif($p->status == 'accepted' || $p->status == 'diterima') <span class="badge badge-accepted">Accepted</span>
+                                @elseif($p->status == 'rejected' || $p->status == 'ditolak') <span class="badge badge-rejected">Rejected</span>
                                 @endif
                             </td>
                             <td class="text-center">

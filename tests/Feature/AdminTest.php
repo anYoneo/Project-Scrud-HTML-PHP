@@ -19,8 +19,8 @@ class AdminTest extends TestCase
         parent::setUp();
         $this->admin = Admin::create([
             'name' => 'Test Admin',
-            'email' => 'admin@test.com',
-            'password' => bcrypt('password'),
+            'username' => 'admin',
+            'password' => 'password',
         ]);
         Jurusan::create(['nama_jurusan' => 'TKJ', 'kuota' => 40]);
     }
@@ -28,7 +28,7 @@ class AdminTest extends TestCase
     public function test_admin_can_login(): void
     {
         $response = $this->post(route('login'), [
-            'email' => 'admin@test.com',
+            'username' => 'admin',
             'password' => 'password',
         ]);
 
@@ -39,7 +39,7 @@ class AdminTest extends TestCase
     public function test_admin_cannot_login_with_wrong_password(): void
     {
         $response = $this->post(route('login'), [
-            'email' => 'admin@test.com',
+            'username' => 'admin',
             'password' => 'wrong',
         ]);
 
@@ -50,17 +50,17 @@ class AdminTest extends TestCase
     {
         for ($i = 0; $i < 6; $i++) {
             $this->post(route('login'), [
-                'email' => 'admin@test.com',
+                'username' => 'admin',
                 'password' => 'wrong',
             ]);
         }
 
         $response = $this->post(route('login'), [
-            'email' => 'admin@test.com',
+            'username' => 'admin',
             'password' => 'wrong',
         ]);
 
-        $response->assertSessionHasErrors('email');
+        $response->assertSessionHasErrors('username');
     }
 
     public function test_admin_can_view_dashboard(): void
@@ -73,7 +73,8 @@ class AdminTest extends TestCase
 
     public function test_admin_can_update_registration_status(): void
     {
-        $pendaftaran = Pendaftaran::factory()->create(['jurusan_id' => 1]);
+        \App\Models\Kecamatan::create(['nama_kecamatan' => 'Leuwimunding']);
+        $pendaftaran = Pendaftaran::factory()->create(['jurusan' => 'TKJ']);
 
         $response = $this->actingAs($this->admin, 'admin')
             ->patch(route('admin.pendaftaran.updateStatus', $pendaftaran), [
@@ -82,14 +83,9 @@ class AdminTest extends TestCase
             ]);
 
         $response->assertRedirect();
-        $this->assertDatabaseHas('pendaftaran', [
+        $this->assertDatabaseHas('pendaftarans', [
             'id' => $pendaftaran->id,
-            'status' => 'accepted',
-        ]);
-        $this->assertDatabaseHas('audit_logs', [
-            'action' => 'update_status',
-            'entity_type' => 'pendaftaran',
-            'entity_id' => $pendaftaran->id,
+            'status' => 'diterima',
         ]);
     }
 

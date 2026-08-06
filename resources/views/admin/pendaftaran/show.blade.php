@@ -20,7 +20,7 @@
                             <tr><td class="text-muted">Jenis Kelamin</td><td>:</td><td>{{ $pendaftaran->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td></tr>
                             <tr><td class="text-muted">Agama</td><td>:</td><td>{{ $pendaftaran->agama }}</td></tr>
                             <tr><td class="text-muted">Alamat</td><td>:</td><td>{{ $pendaftaran->alamat }}</td></tr>
-                            <tr><td class="text-muted">No. Telepon</td><td>:</td><td>{{ $pendaftaran->no_telepon }}</td></tr>
+                            <tr><td class="text-muted">No. Telepon</td><td>:</td><td>{{ $pendaftaran->telepon }}</td></tr>
                             <tr><td class="text-muted">Email</td><td>:</td><td>{{ $pendaftaran->email ?? '-' }}</td></tr>
                         </table>
                     </div>
@@ -35,33 +35,17 @@
                         <p class="mt-2 text-muted small">Status saat ini:</p>
                         @if($pendaftaran->status == 'pending') <span class="badge badge-pending px-3 py-2 fs-6">Pending</span>
                         @elseif($pendaftaran->status == 'verified') <span class="badge badge-verified px-3 py-2 fs-6">Verified</span>
-                        @elseif($pendaftaran->status == 'accepted') <span class="badge badge-accepted px-3 py-2 fs-6">Accepted</span>
-                        @elseif($pendaftaran->status == 'rejected') <span class="badge badge-rejected px-3 py-2 fs-6">Rejected</span>
+                        @elseif($pendaftaran->status == 'accepted' || $pendaftaran->status == 'diterima') <span class="badge badge-accepted px-3 py-2 fs-6">Accepted</span>
+                        @elseif($pendaftaran->status == 'rejected' || $pendaftaran->status == 'ditolak') <span class="badge badge-rejected px-3 py-2 fs-6">Rejected</span>
                         @endif
                     </div>
                 </div>
 
-                <h6 class="border-bottom pb-2 text-primary">Data Orang Tua / Wali</h6>
-                <table class="table table-borderless table-sm mb-4">
-                    <tr><td width="30%" class="text-muted">Nama Wali</td><td>:</td><td>{{ $pendaftaran->nama_wali }}</td></tr>
-                    <tr><td class="text-muted">No. Telepon Wali</td><td>:</td><td>{{ $pendaftaran->telepon_wali }}</td></tr>
-                </table>
-
                 <h6 class="border-bottom pb-2 text-primary">Data Akademik</h6>
                 <table class="table table-borderless table-sm mb-4">
                     <tr><td width="30%" class="text-muted">Asal Sekolah</td><td>:</td><td>{{ $pendaftaran->asal_sekolah }}</td></tr>
-                    <tr><td class="text-muted">Nilai Rata-rata</td><td>:</td><td><span class="badge bg-secondary">{{ $pendaftaran->nilai_rata_rata }}</span></td></tr>
-                    <tr><td class="text-muted">Jurusan Dipilih</td><td>:</td><td class="fw-bold">{{ $pendaftaran->jurusan->nama_jurusan ?? '-' }}</td></tr>
+                    <tr><td class="text-muted">Jurusan Dipilih</td><td>:</td><td class="fw-bold">{{ $pendaftaran->jurusan->nama_jurusan ?? $pendaftaran->jurusan }}</td></tr>
                 </table>
-
-                <h6 class="border-bottom pb-2 text-primary">Berkas Lampiran</h6>
-                @if($pendaftaran->ijazah)
-                    <a href="{{ Storage::url($pendaftaran->ijazah) }}" target="_blank" class="btn btn-sm btn-outline-info">
-                        <i class="bi bi-file-earmark-pdf"></i> Lihat Dokumen Ijazah/SKHUN
-                    </a>
-                @else
-                    <span class="text-muted fst-italic">Tidak ada dokumen dilampirkan</span>
-                @endif
             </div>
         </div>
     </div>

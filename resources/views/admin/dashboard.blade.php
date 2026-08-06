@@ -114,8 +114,8 @@
                                     <td>
                                         @if($reg->status == 'pending') <span class="badge badge-pending">Pending</span>
                                         @elseif($reg->status == 'verified') <span class="badge badge-verified">Verified</span>
-                                        @elseif($reg->status == 'accepted') <span class="badge badge-accepted">Accepted</span>
-                                        @elseif($reg->status == 'rejected') <span class="badge badge-rejected">Rejected</span>
+                                        @elseif($reg->status == 'accepted' || $reg->status == 'diterima') <span class="badge badge-accepted">Accepted</span>
+                                        @elseif($reg->status == 'rejected' || $reg->status == 'ditolak') <span class="badge badge-rejected">Rejected</span>
                                         @endif
                                     </td>
                                 </tr>
